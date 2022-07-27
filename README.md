@@ -1,56 +1,98 @@
-# Commands
+# 1. Install ArgoCD
+```console
 kubectl create namespace argocd
+```
+```console
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+```console
 kubectl get all -n argocd
-
-# Enter below command to get the encoded password
+```
+# 2. Get the encoded password
+```console
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
-Output: aGhqMW1kd1ZxWXZVOXRtYQ==
+```
+Note the output, looks like `aGhqMW1kd1ZxWXZVOXRtYQ==`
 
-# Enter below command to decode password
-echo aGhqMW1kd1ZxWXZVOXRtYQ== | base64 -d
-Output: hhj1mdwVqYvU9tma
+# 3. Decode password
+```console
+echo <step-2-output> | base64 -d
+```
+Note the output, looks like `hhj1mdwVqYvU9tma`
 
-# Edit service to change type to NodePort
+# 4. Change service type from `ClusterIP` to `NodePort`
+```console
 kubectl -n argocd edit svc argocd-server
-Change service type as NodePort (type: NodePort)
+```
+<b>Note:</b> Change service of type: `ClusterIP` to type: `NodePort`
 
-# Follow below steps to access ArgoCD Login Page
+# 5. Access ArgoCD Login Page
+```console
 kubectl -n argocd get svc
-Note the exposed ports: (80:30021 , 443:31213)
+```
+Note the exposed ports, looks like `80:30021` , `443:31213`
+```console
 kubectl get nodes -o wide
-Note the EXTERNAL-IP of node: 54.212.132.136
-Browse 54.212.132.136:30021 or 54.212.132.136:31213
-Default Username: admin
-Password: hhj1mdwVqYvU9tma
+```
+Note the EXTERNAL-IP of node, looks like `54.212.132.136`
 
-# Download ArgoCD CLI
+---
+Browse `EXTERNAL-IP:port`, like `54.212.132.136:30021` or `54.212.132.136:31213`
+# 6. Login to ArgoCD Server
+
+<b>Default Username:</b> `admin`
+
+<b>Password:</b> `<step-3-output>`
+
+# 7. Download ArgoCD CLI
 https://github.com/argoproj/argo-cd/releases
 https://github.com/argoproj/argo-cd/releases/download/v2.3.3/argocd-windows-amd64.exe
 
-# Login to ArgoCD
-argocd login 54.212.132.136:31213 --insecure --username admin --password hhj1mdwVqYvU9tma
+# 8. Login to ArgoCD from CLI
+argocd login `EXTERNAL-IP:port` --insecure --username admin --password `<step-3-output>`
 
-# Update Password
-argocd account update-password --current-password abcde@123 --new-password abcde@456
+# 9. Update Password
+argocd account update-password --current-password `<step-3-output>` --new-password `<set-your-own-password>`
 
-argocd cluster list
-argocd proj list
-argocd repo list
-argocd app list
-argocd account get-user-info
-argocd logout 54.212.132.136:31213
-
-# Register a cluster to deploy apps in it.
+# 10. Register a cluster to deploy apps in it.
+```console
 argocd cluster add
-
+```
+```console
 argocd app create argocd-demo --repo https://github.com/nanda259/argocd --path app-config --dest-namespace default --dest-server https://kubernetes.default.svc
+```
+```console
 argocd app sync argocd-demo
+```
+```console
 argocd app get argocd-demo
+```
+```console
 argocd app resources argocd-demo
+```
+```console
 argocd app delete argocd-demo
-
-
+```
+---
+# Commands
+```console
+argocd cluster list
+```
+```console
+argocd proj list
+```
+```console
+argocd repo list
+```
+```console
+argocd app list
+```
+```console
+argocd account get-user-info
+```
+```console
+argocd logout 54.212.132.136:31213
+```
 # Links
 * Config repo: https://github.com/nanda259/argocd.git
 * Docker repo: https://hub.docker.com/repository/docker/yoga199/argocd
