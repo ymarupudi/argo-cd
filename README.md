@@ -58,9 +58,6 @@ argocd account update-password --current-password <step-3-output> --new-password
 ```
 # 10. Register a cluster to deploy apps in it.
 ```console
-argocd cluster add
-```
-```console
 argocd cluster add <give-a-name-to-cluster> --name <kubernetes-cluster-name>
 ```
 ```console
