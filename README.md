@@ -56,7 +56,7 @@ argocd login <EXTERNAL-IP:port> --insecure --username admin --password <step-3-o
 ```console
 argocd account update-password --current-password <step-3-output> --new-password <set-your-own-password>
 ```
-# 10. Register a cluster to deploy apps in it.
+# 10. Register a cluster to deploy apps
 ```console
 argocd cluster add <give-a-name-to-cluster> --name <kubernetes-cluster-name>
 ```
