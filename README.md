@@ -61,6 +61,9 @@ argocd account update-password --current-password <step-3-output> --new-password
 argocd cluster add
 ```
 ```console
+argocd cluster add <give-a-name-to-cluster> --name <kubernetes-cluster-name>
+```
+```console
 argocd app create <enter-your-app-name> --repo <enter-your-repository-URL> --path <folder-path-in-which-manifests-are-present> --dest-namespace default --dest-server https://kubernetes.default.svc
 ```
 ```console
