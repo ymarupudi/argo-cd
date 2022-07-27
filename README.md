@@ -49,29 +49,31 @@ https://github.com/argoproj/argo-cd/releases
 https://github.com/argoproj/argo-cd/releases/download/v2.3.3/argocd-windows-amd64.exe
 
 # 8. Login to ArgoCD from CLI
-argocd login `EXTERNAL-IP:port` --insecure --username admin --password `<step-3-output>`
-
+```console
+argocd login <EXTERNAL-IP:port> --insecure --username admin --password <step-3-output>
+```
 # 9. Update Password
-argocd account update-password --current-password `<step-3-output>` --new-password `<set-your-own-password>`
-
+```console
+argocd account update-password --current-password <step-3-output> --new-password <set-your-own-password>
+```
 # 10. Register a cluster to deploy apps in it.
 ```console
 argocd cluster add
 ```
 ```console
-argocd app create argocd-demo --repo https://github.com/nanda259/argocd --path app-config --dest-namespace default --dest-server https://kubernetes.default.svc
+argocd app create <enter-your-app-name> --repo <enter-your-repository-URL> --path <folder-path-in-which-manifests-are-present> --dest-namespace default --dest-server https://kubernetes.default.svc
 ```
 ```console
-argocd app sync argocd-demo
+argocd app sync <enter-your-app-name>
 ```
 ```console
-argocd app get argocd-demo
+argocd app get <enter-your-app-name>
 ```
 ```console
-argocd app resources argocd-demo
+argocd app resources <enter-your-app-name>
 ```
 ```console
-argocd app delete argocd-demo
+argocd app delete <enter-your-app-name>
 ```
 ---
 # Commands
@@ -91,7 +93,7 @@ argocd app list
 argocd account get-user-info
 ```
 ```console
-argocd logout 54.212.132.136:31213
+argocd logout <EXTERNAL-IP:port>
 ```
 # Links
 * Config repo: https://github.com/nanda259/argocd.git
