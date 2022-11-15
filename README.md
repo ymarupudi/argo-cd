@@ -1,63 +1,68 @@
-# 1. Install ArgoCD
-```console
-kubectl create namespace argocd
-```
-```console
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-```
-```console
-kubectl get all -n argocd
-```
-# 2. Retrieve password
-```console
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
-```
-Note the output, looks like `hhj1mdwVqYvU9tma`
+# Download argo-cd CLI
+Click [here](https://github.com/argoproj/argo-cd/releases/download/v2.5.2/argocd-windows-amd64.exe) to download argo-cd CLI. Click [here](https://github.com/argoproj/argo-cd/releases) for the latest argo-cd release
 
-# 3. Access The ArgoCD API Server
-## Approach 1
-### i) Change the argocd-server service type
+Move `argo-cd` application to the folder of your choice and add that folder to the system file path to make it easily accessible from command line.
+## 1. Install argo-cd
 ```console
-kubectl -n argocd edit svc argocd-server
+helm repo add argo https://argoproj.github.io/argo-helm
 ```
-<b>Note:</b> Change service of type: `ClusterIP` to type: `NodePort`
-### ii) Access ArgoCD Login Page
 ```console
-kubectl -n argocd get svc
+helm repo update
 ```
-Note the exposed ports, looks like `80:30021` , `443:31213`
 ```console
-kubectl get nodes -o wide
+helm install argocd --create-namespace --namespace argocd-system argo/argo-cd
 ```
-Note the EXTERNAL-IP of node, looks like `54.212.132.136`
-
-Browse `EXTERNAL-IP:port`, like `54.212.132.136:30021` or `54.212.132.136:31213`
-### iii) Login to ArgoCD Server
+```console
+kubectl get pods -n argocd-system
+```
+## 2. Retrieve the password with below command and note it
+```console
+kubectl -n argocd-system get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+## 3. Access the argo-cd
+### Approach 1
+Port Forwarding
+```console
+kubectl port-forward service/argocd-server -n argocd-system 8080:443
+```
+To login, browse `127.0.0.1:8080`
 
 <b>Default Username:</b> `admin`
 
-<b>Password:</b> `<step-2-output>`
-### iv) Download ArgoCD CLI
-Go to https://github.com/argoproj/argo-cd/releases and click on `argocd-windows-amd64.exe`
+<b>Password:</b> `<enter-step-2-output>`
 
-### v) Login to ArgoCD from CLI
-```console
-argocd login <EXTERNAL-IP:port> --insecure --username admin --password <step-2-output>
-```
-## Approach 2
-### i) Port Forwarding
-```console
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-```
-### ii) Login using the CLI
+To login using the argo-cd CLI
 ```console
 argocd login localhost:8080 --insecure --username admin --password <enter-step-2-output>
 ```
-# 4. Update Password
+### Approach 2
+Change the argocd-server service type: `ClusterIP` to type: `NodePort`
+```console
+kubectl edit service/argocd-server -n argocd-system
+```
+Run below command and note the exposed ports, looks like `80:30021` , `443:31213`
+```console
+kubectl -n argocd get svc
+```
+Run below command and note the `EXTERNAL-IP` of node, looks like `54.212.132.136`
+```console
+kubectl get nodes -o wide
+```
+To login, browse `EXTERNAL-IP:port`, example... `54.212.132.136:30021` or `54.212.132.136:31213`
+
+<b>Default Username:</b> `admin`
+
+<b>Password:</b> `<enter-step-2-output>`
+
+To login using the argo-cd CLI
+```console
+argocd login <EXTERNAL-IP:port> --insecure --username admin --password <enter-step-2-output>
+```
+## 4. To update argo-cd password
 ```console
 argocd account update-password --current-password <step-2-output> --new-password <set-your-own-password>
 ```
-# 5. Deploy app
+## 5. Deploy app
 ### i) Create an application
 ```console
 argocd app create <enter-your-app-name> --repo <enter-your-repository-URL> --path <folder-path-in-which-manifests-are-present> --dest-namespace default --dest-server https://kubernetes.default.svc
@@ -102,7 +107,7 @@ argocd account get-user-info
 ```console
 argocd logout <EXTERNAL-IP:port>
 ```
-# 6. Register an external cluster to deploy apps
+## 6. Register an external cluster to deploy apps
 ### i) List all clusters contexts in your current kubeconfig
 ```console
 kubectl config get-contexts
