@@ -130,9 +130,7 @@ argocd cluster list
 ```console
 argocd cluster rm <NAME>
 ```
-# Links
-* Config repo: https://github.com/nanda259/argocd.git
-* Docker repo: https://hub.docker.com/repository/docker/yoga199/argocd
+## Links
 * Install ArgoCD: https://argo-cd.readthedocs.io/en/stable/getting_started/#1-install-argo-cd
 * Login to ArgoCD: https://argo-cd.readthedocs.io/en/stable/getting_started/#4-login-using-the-cli
 * ArgoCD Configuration: https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
