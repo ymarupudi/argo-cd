@@ -42,7 +42,7 @@ kubectl edit service/argocd-server -n argocd-system
 ```
 Run below command and note the exposed ports, looks like `80:30021` , `443:31213`
 ```console
-kubectl -n argocd get svc
+kubectl get service -n argocd-system
 ```
 Run below command and note the `EXTERNAL-IP` of node, looks like `54.212.132.136`
 ```console
